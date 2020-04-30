@@ -1,4 +1,4 @@
 [build]
   base    = "client/"
-  publish = "client/build"
+  publish = "client/public"
   command = "npm build"
