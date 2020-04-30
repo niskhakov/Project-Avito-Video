@@ -51,7 +51,7 @@ const Contacts = ({ setPage, extra }) => {
               @{currentUser[0]}
             </div>
             <div
-              className="btn btn-outline-success m-3"
+              className="btn btn-outline-success m-3 callBtn"
               onClick={() => setPage("Call", currentUser)}
             >
               Позвонить

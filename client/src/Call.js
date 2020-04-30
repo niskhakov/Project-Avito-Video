@@ -9,6 +9,8 @@ import {
 
 let ENABLED_VIDEO = false;
 
+let stream;
+
 const constraints = (window.constraints = {
   audio: false,
   video: true,
@@ -16,7 +18,7 @@ const constraints = (window.constraints = {
 
 async function init(e, turnOff) {
   try {
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
     handleSuccess(stream);
     if (!ENABLED_VIDEO) {
       turnOff();
@@ -42,9 +44,16 @@ function handleSuccess(stream) {
     ENABLED_VIDEO = true;
   } else {
     video.srcObject = null;
+    video.removeAttribute("src");
+    video.removeAttribute("srcObject");
+
     phoneOn.classList.remove("d-none");
     phoneOff.classList.add("d-none");
     video.classList.add("contact-video");
+
+    stream.getTracks().forEach((track) => {
+      track.stop();
+    });
     ENABLED_VIDEO = false;
   }
 }
@@ -82,7 +91,7 @@ const Call = ({ setPage, extra }) => {
         <div className="row flex-column align-content-center justify-content-between w-100">
           <div className="video-container d-flex justify-content-center overflow-hidden align-items-center">
             <video
-              id="gum-local"
+              id="remoteVideo"
               autoPlay
               className="contact-video rounded"
             ></video>
@@ -111,7 +120,15 @@ const Call = ({ setPage, extra }) => {
           <div id="errorMsg"></div>
         </div>
         <div className="row justify-content-around mt-5 mb-2">
-          <a href="#" id="phone-call">
+          <div
+            id="hangUpBtn"
+            style={{ cursor: "pointer" }}
+            onClick={(e) =>
+              init(e, () => {
+                setPage("Contacts", extra);
+              })
+            }
+          >
             <FontAwesomeIcon
               icon={faPhone}
               size="4x"
@@ -124,17 +141,17 @@ const Call = ({ setPage, extra }) => {
               className="text-danger d-none"
               id="phone-icon-off"
             />
-          </a>
-          <a href="#">
+          </div>
+          <div>
             <FontAwesomeIcon
               icon={faCamera}
               size="4x"
               className="text-secondary"
             />
-          </a>
-          <a href="#">
+          </div>
+          <div>
             <FontAwesomeIcon icon={faBars} size="4x" />
-          </a>
+          </div>
         </div>
       </div>
       <div className="col-xl-4 d-flex justify-content-center">
