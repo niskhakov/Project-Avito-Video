@@ -28,19 +28,33 @@
       <div class="container w-75">
         <div class="row align-items-center height">
           <div class="col-lg-8 justify-content-center my-5">
-            <div class="row justify-content-center">
-              <div
-                class="border border-success contact-video rounded-circle"
-              ></div>
+            <div
+              class="row flex-column align-content-center justify-content-between w-100"
+            >
+              <div class="video-container">
+                <video
+                  id="gum-local"
+                  autoplay
+                  class="contact-video border border-success rounded"
+                ></video>
+              </div>
+              <button
+                id="showVideo"
+                class="btn btn-outline-primary mx-5 mt-5 mb-2"
+              >
+                Open/Close camera #test
+              </button>
+
+              <div id="errorMsg"></div>
             </div>
             <div class="row justify-content-around mt-5 mb-2">
-              <a href="">
-                <i class="fas fa-phone-slash fa-4x text-danger"></i>
+              <a href="#" id="phone-call">
+                <i class="fas fa-phone fa-4x text-success" id="phone-icon"></i>
               </a>
-              <a href="">
+              <a href="#">
                 <i class="fas fa-camera fa-4x text-secondary"></i>
               </a>
-              <a href="">
+              <a href="#">
                 <i class="fas fa-bars fa-4x"></i>
               </a>
             </div>
@@ -130,6 +144,8 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="js/wrtc-main.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
       integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
