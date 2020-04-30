@@ -166,13 +166,13 @@ const Call = ({ setPage, extra }) => {
                     <li className="media">
                       <a href="#" className="px-3">
                         <img
-                          src="https://bootdey.com/img/Content/user_3.jpg"
+                          src={`https://robohash.org/${username}has?set=set4`}
                           alt=""
                           className="img-circle"
                         />
                       </a>
                       <div className="media-body">
-                        <strong className="text-success">Евгений</strong>
+                        <strong className="text-success">{realname}</strong>
                         <p>
                           Lorem ipsum, dolor sit amet consectetur adipisicing
                           elit. Modi praesentium quae voluptates delectus
@@ -199,13 +199,13 @@ const Call = ({ setPage, extra }) => {
                     <li className="media">
                       <a href="#" className="px-3">
                         <img
-                          src="https://bootdey.com/img/Content/user_3.jpg"
+                          src={`https://robohash.org/${username}has?set=set4`}
                           alt=""
                           className="img-circle"
                         />
                       </a>
                       <div className="media-body">
-                        <strong className="text-success">Евгений</strong>
+                        <strong className="text-success">{realname}</strong>
                         <p>
                           Lorem ipsum dolor sit amet consectetur adipisicing
                           elit.
