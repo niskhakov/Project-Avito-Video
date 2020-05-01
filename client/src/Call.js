@@ -7,7 +7,7 @@ import {
   faPhoneSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
-let ENABLED_VIDEO = false;
+let ENABLED_VIDEO = null;
 
 let stream;
 
@@ -20,8 +20,11 @@ async function init(e, turnOff) {
   try {
     stream = await navigator.mediaDevices.getUserMedia(constraints);
     handleSuccess(stream);
-    if (!ENABLED_VIDEO) {
-      turnOff();
+    if (ENABLED_VIDEO === false) {
+      setTimeout(() => {
+        turnOff();
+        stream.getTracks().forEach((track) => track.stop());
+      }, 1000);
     }
   } catch (e) {
     handleError(e);
@@ -51,9 +54,6 @@ function handleSuccess(stream) {
     phoneOff.classList.add("d-none");
     video.classList.add("contact-video");
 
-    stream.getTracks().forEach((track) => {
-      track.stop();
-    });
     ENABLED_VIDEO = false;
   }
 }
