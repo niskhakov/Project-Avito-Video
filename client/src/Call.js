@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPhone,
@@ -6,8 +6,7 @@ import {
   faCamera,
   faPhoneSlash,
 } from "@fortawesome/free-solid-svg-icons";
-
-let ENABLED_VIDEO = null;
+import getLocalStream, { localStream } from "./config/webrtc"
 
 let stream;
 
@@ -16,45 +15,60 @@ const constraints = (window.constraints = {
   video: true,
 });
 
-async function init(e, turnOff) {
+// async function init(e, turnOff) {
+//   try {
+
+//     stream = await navigator.mediaDevices.getUserMedia(constraints);
+//     handleSuccess(stream);
+//     if (ENABLED_VIDEO === false) {
+//       setTimeout(() => {
+//         turnOff();
+//         stream.getTracks().forEach((track) => track.stop());
+//       }, 1000);
+//     }
+//   } catch (e) {
+//     handleError(e);
+//   }
+// }
+
+
+
+async function initCall(callDetails) {
   try {
-    stream = await navigator.mediaDevices.getUserMedia(constraints);
-    handleSuccess(stream);
-    if (ENABLED_VIDEO === false) {
-      setTimeout(() => {
-        turnOff();
-        stream.getTracks().forEach((track) => track.stop());
-      }, 1000);
-    }
+    getLocalStream(document.querySelector("#remoteVideo"), { audio: false, video: true }, callDetails)
+    handleVideo(true)
   } catch (e) {
-    handleError(e);
+    handleError(e)
   }
 }
 
-function handleSuccess(stream) {
+async function hangupCall(afterTurnOff) {
+  localStream.getTracks().forEach((track) => track.stop());
+  handleVideo(false);
+  afterTurnOff();
+}
+
+function handleVideo(videoState) {
   const video = document.querySelector("video");
   const phoneOn = document.querySelector("#phone-icon-on");
   const phoneOff = document.querySelector("#phone-icon-off");
-  if (!ENABLED_VIDEO) {
-    const videoTracks = stream.getVideoTracks();
+  if (videoState) {
+    // const videoTracks = stream.getVideoTracks();
     video.classList.remove("contact-video");
     phoneOn.classList.add("d-none");
     phoneOff.classList.remove("d-none");
     console.log("Got stream with constraints:", constraints);
-    console.log(`Using video device: ${videoTracks[0].label}`);
-    window.stream = stream; // make variable available to browser console
-    video.srcObject = stream;
-    ENABLED_VIDEO = true;
+    // console.log(`Using video device: ${videoTracks[0].label}`);
+    // window.stream = stream; // make variable available to browser console
+    // video.srcObject = stream;
   } else {
-    video.srcObject = null;
+    // video.srcObject = null;
     video.removeAttribute("src");
     video.removeAttribute("srcObject");
 
     phoneOn.classList.remove("d-none");
     phoneOff.classList.add("d-none");
     video.classList.add("contact-video");
-
-    ENABLED_VIDEO = false;
   }
 }
 
@@ -67,8 +81,8 @@ function handleError(error) {
   } else if (error.name === "PermissionDeniedError") {
     errorMsg(
       "Permissions have not been granted to use your camera and " +
-        "microphone, you need to allow the page access to your devices in " +
-        "order for the demo to work."
+      "microphone, you need to allow the page access to your devices in " +
+      "order for the demo to work."
     );
   }
   errorMsg(`getUserMedia error: ${error.name}`, error);
@@ -81,10 +95,36 @@ function errorMsg(msg, error) {
     console.error(error);
   }
 }
+// init(e, () => {
+//   setPage("Contacts", extra);
+// })
+
 
 const Call = ({ setPage, extra }) => {
-  const username = extra[0];
-  const realname = extra[1];
+  console.log(extra)
+  let selectedUser = extra.selectedUser || ["incoming", "incoming call"]
+  const username = selectedUser[0];
+  const realname = selectedUser[1];
+
+  // Start connection after component did mount
+  useEffect(() => {
+
+    const callDetails = {
+      caller: {
+        username: extra.currentUser[0],
+        authToken: `##token##${extra.currentUser[0]}##` // TODO: transmit real token
+      },
+      callInfo: {
+        "from": extra.currentUser[0],
+        "to": username
+      },
+      acceptCall: username === "incoming" ? true : false
+    }
+
+    initCall(callDetails)
+  })
+
+
   return (
     <div className="row align-items-center height">
       <div className="col-xl-8 justify-content-center my-5">
@@ -99,12 +139,7 @@ const Call = ({ setPage, extra }) => {
           <div className="row align-items-center justify-content-center">
             <button
               id="showVideo"
-              className="btn btn-outline-primary m-2 p-2"
-              onClick={(e) =>
-                init(e, () => {
-                  setPage("Contacts", extra);
-                })
-              }
+              className="btn btn-outline-primary m-2 p-2 d-none"
             >
               Open/Close camera #test
             </button>
@@ -123,10 +158,8 @@ const Call = ({ setPage, extra }) => {
           <div
             id="hangUpBtn"
             style={{ cursor: "pointer" }}
-            onClick={(e) =>
-              init(e, () => {
-                setPage("Contacts", extra);
-              })
+            onClick={() =>
+              hangupCall(() => setPage("Contacts", extra))
             }
           >
             <FontAwesomeIcon
@@ -164,13 +197,13 @@ const Call = ({ setPage, extra }) => {
                 <div className="panel-body">
                   <ul className="media-list pl-0">
                     <li className="media">
-                      <a href="#" className="px-3">
+                      <div className="px-3">
                         <img
                           src={`https://robohash.org/${username}has?set=set4`}
-                          alt=""
+                          alt="User"
                           className="img-circle"
                         />
-                      </a>
+                      </div>
                       <div className="media-body">
                         <strong className="text-success">{realname}</strong>
                         <p>
