@@ -50,7 +50,7 @@ let getLocalStream = (videoElement, constraints, callDetails) => {
     // console.log(`getLocalStream: ${callDetails}`)
     userDetails = callDetails
     remoteStreamElement = videoElement
-    console.dir(remoteStreamElement)
+    console.dir(`Remote Stream: ${remoteStreamElement}`)
     navigator.mediaDevices
         .getUserMedia(constraints)
         .then((stream) => {
@@ -114,6 +114,11 @@ let onAddStream = (event) => {
 }
 
 let handleSignalingData = (data) => {
+    if (data.type === "incoming_call") {
+        console.log(data)
+        callbacks["incoming_call"](data)
+    }
+    // if (localStream !== undefined) {
     console.log(data)
     switch (data.type) {
         case "offer":
@@ -127,11 +132,14 @@ let handleSignalingData = (data) => {
         case "candidate":
             pc.addIceCandidate(new RTCIceCandidate(data.candidate))
             break
-        case "incoming_call":
-            console.log(data)
-            callbacks["incoming_call"](data)
-            break
+
     }
+    // } else {
+    //     setTimeout(() => {
+    //         console.log("Timeout 0.5, localStream wasn't launched")
+    //         handleSignalingData(data)
+    //     }, 1000)
+    // }
 }
 export { localStream, registerWebrtcCallback };
 export default getLocalStream;

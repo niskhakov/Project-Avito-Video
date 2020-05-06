@@ -11,7 +11,7 @@ import getLocalStream, { localStream } from "./config/webrtc"
 let stream;
 
 const constraints = (window.constraints = {
-  audio: false,
+  audio: true,
   video: true,
 });
 
@@ -102,7 +102,7 @@ function errorMsg(msg, error) {
 
 const Call = ({ setPage, extra }) => {
   console.log(extra)
-  let selectedUser = extra.selectedUser || ["incoming", "incoming call"]
+  let selectedUser = extra.selectedUser || ["incomingCall", "incoming call"]
   const username = selectedUser[0];
   const realname = selectedUser[1];
 
