@@ -195,6 +195,7 @@ const Call = ({ setPage, extra }) => {
               id="localVideo"
               autoPlay
               className="rounded m-4 w-75"
+              muted="muted"
             ></video></div>
             <div className="comment-wrapper">
               <div className="panel panel-info">
