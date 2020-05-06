@@ -130,7 +130,7 @@ const Call = ({ setPage, extra }) => {
     <div className="row align-items-center height">
       <div className="col-xl-8 justify-content-center my-5">
         <div className="row flex-column align-content-center justify-content-between w-100">
-          <div className="video-container d-flexjustify-content-center overflow-hidden align-items-center">
+          <div className="video-container d-flex justify-content-center overflow-hidden align-items-center">
             <video
               id="remoteVideo"
               autoPlay
