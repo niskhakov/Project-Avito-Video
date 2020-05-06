@@ -35,7 +35,7 @@ const constraints = (window.constraints = {
 
 async function initCall(callDetails) {
   try {
-    getLocalStream(document.querySelector("#remoteVideo"), constraints, callDetails)
+    getLocalStream(document.querySelector("#remoteVideo"), document.querySelector("#localVideo"), constraints, callDetails)
     handleVideo(true)
   } catch (e) {
     handleError(e)
@@ -49,7 +49,8 @@ async function hangupCall(afterTurnOff) {
 }
 
 function handleVideo(videoState) {
-  const video = document.querySelector("video");
+  const video = document.querySelector("#remoteVideo");
+  // const localVideo = window.querySelector("#localVideo")
   const phoneOn = document.querySelector("#phone-icon-on");
   const phoneOff = document.querySelector("#phone-icon-off");
   if (videoState) {
@@ -129,7 +130,7 @@ const Call = ({ setPage, extra }) => {
     <div className="row align-items-center height">
       <div className="col-xl-8 justify-content-center my-5">
         <div className="row flex-column align-content-center justify-content-between w-100">
-          <div className="video-container d-flex justify-content-center overflow-hidden align-items-center">
+          <div className="video-container d-flexjustify-content-center overflow-hidden align-items-center">
             <video
               id="remoteVideo"
               autoPlay
@@ -190,6 +191,11 @@ const Call = ({ setPage, extra }) => {
       <div className="col-xl-4 d-flex justify-content-center">
         <div className="row bootstrap snippets">
           <div className="col">
+            <div className="d-flex justify-content-center"><video
+              id="localVideo"
+              autoPlay
+              className="rounded m-4 w-75"
+            ></video></div>
             <div className="comment-wrapper">
               <div className="panel panel-info">
                 <h3 className="text-center my-3">Чат</h3>

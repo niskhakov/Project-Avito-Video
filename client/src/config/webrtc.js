@@ -39,6 +39,7 @@ socket.on("ready", () => {
 let pc
 let localStream
 let remoteStreamElement
+let localStreamElement
 let userDetails // contain info about caller (also have security token) and callee
 let callbacks = {}
 let registerWebrtcCallback = (event, callback) => {
@@ -46,16 +47,18 @@ let registerWebrtcCallback = (event, callback) => {
     // console.log(callbacks)
 }
 
-let getLocalStream = (videoElement, constraints, callDetails) => {
+let getLocalStream = (videoElement, localVideoElement, constraints, callDetails) => {
     // console.log(`getLocalStream: ${callDetails}`)
     userDetails = callDetails
     remoteStreamElement = videoElement
+    localStreamElement = localVideoElement
     console.dir(`Remote Stream: ${remoteStreamElement}`)
     navigator.mediaDevices
         .getUserMedia(constraints)
         .then((stream) => {
             console.log("Stream found")
             localStream = stream
+            localStreamElement.srcObject = localStream
             if (!userDetails.acceptCall) {
                 socket.emit("call", userDetails.callInfo)
             }
