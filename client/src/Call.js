@@ -35,7 +35,7 @@ const constraints = (window.constraints = {
 
 async function initCall(callDetails) {
   try {
-    getLocalStream(document.querySelector("#remoteVideo"), { audio: false, video: true }, callDetails)
+    getLocalStream(document.querySelector("#remoteVideo"), constraints, callDetails)
     handleVideo(true)
   } catch (e) {
     handleError(e)
