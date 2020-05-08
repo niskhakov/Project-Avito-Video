@@ -8,8 +8,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import getLocalStream, { localStream } from "./config/webrtc"
 
-let stream;
-
 const constraints = (window.constraints = {
   audio: true,
   video: true,

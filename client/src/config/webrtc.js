@@ -78,6 +78,7 @@ let createPeerConnection = () => {
         pc = new RTCPeerConnection(PC_CONFIG)
         pc.onicecandidate = onIceCandidate
         pc.onaddstream = onAddStream
+        pc.onremovestream = onRemoveStream
         pc.addStream(localStream)
         console.log("PeerConnection created")
     } catch (error) {
@@ -118,6 +119,14 @@ let onIceCandidate = (event) => {
 let onAddStream = (event) => {
     console.log("Add stream")
     remoteStreamElement.srcObject = event.stream
+}
+
+let onRemoveStream = (event) => {
+    console.log("Stream removed")
+    remoteStreamElement.srcObject = null
+    localStream.getTracks().forEach((track) => track.stop());
+    alert("Вызов завершен")
+    document.location.reload()
 }
 
 let handleSignalingData = (data) => {
