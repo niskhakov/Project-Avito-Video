@@ -22,18 +22,7 @@ const PC_CONFIG = {
     ],
 }
 
-// add middlewares specific to webrtc
-socket.on("data", (data) => {
-    console.log("Data received: ", data)
-    handleSignalingData(data)
-})
 
-socket.on("ready", () => {
-    console.log("Ready")
-    // Connection with signaling server is ready, and so is local stream
-    createPeerConnection()
-    sendOffer()
-})
 
 // WebRTC methods
 let pc
@@ -47,7 +36,21 @@ let registerWebrtcCallback = (event, callback) => {
     // console.log(callbacks)
 }
 
+const handleData = (data) => {
+    console.log("Data received: ", data)
+    handleSignalingData(data)
+}
+
+const handleReady = () => {
+    console.log("Ready")
+    // Connection with signaling server is ready, and so is local stream
+    createPeerConnection()
+    sendOffer()
+}
+
 let getLocalStream = (videoElement, localVideoElement, constraints, callDetails) => {
+    // add middlewares specific to webrtc
+
     // console.log(`getLocalStream: ${callDetails}`)
     userDetails = callDetails
     remoteStreamElement = videoElement
@@ -60,7 +63,8 @@ let getLocalStream = (videoElement, localVideoElement, constraints, callDetails)
             localStream = stream
             localStreamElement.srcObject = localStream
             if (!userDetails.acceptCall) {
-                socket.emit("call", userDetails.callInfo)
+                console.log(socket)
+                socket().emit("call", userDetails.callInfo)
             }
         })
         .catch((error) => {
@@ -117,6 +121,12 @@ let onAddStream = (event) => {
 }
 
 let handleSignalingData = (data) => {
+    if (data.type === "unauthorized") {
+        alert("Unauthorized access or person already connected")
+        setTimeout(() => {
+            document.location.reload()
+        }, 6)
+    }
     if (data.type === "incoming_call") {
         console.log(data)
         callbacks["incoming_call"](data)
@@ -137,12 +147,6 @@ let handleSignalingData = (data) => {
             break
 
     }
-    // } else {
-    //     setTimeout(() => {
-    //         console.log("Timeout 0.5, localStream wasn't launched")
-    //         handleSignalingData(data)
-    //     }, 1000)
-    // }
 }
-export { localStream, registerWebrtcCallback };
+export { localStream, registerWebrtcCallback, handleData, handleReady };
 export default getLocalStream;

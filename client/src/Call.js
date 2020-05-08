@@ -15,23 +15,6 @@ const constraints = (window.constraints = {
   video: true,
 });
 
-// async function init(e, turnOff) {
-//   try {
-
-//     stream = await navigator.mediaDevices.getUserMedia(constraints);
-//     handleSuccess(stream);
-//     if (ENABLED_VIDEO === false) {
-//       setTimeout(() => {
-//         turnOff();
-//         stream.getTracks().forEach((track) => track.stop());
-//       }, 1000);
-//     }
-//   } catch (e) {
-//     handleError(e);
-//   }
-// }
-
-
 
 async function initCall(callDetails) {
   try {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { users } from './config/users'
-import socket from './config/socket'
-import { registerWebrtcCallback } from "./config/webrtc"
+import getSocket, { initConnection } from './config/socket'
+import { registerWebrtcCallback, handleData, handleReady } from "./config/webrtc"
 
 function arraysEqual(a, b) {
   if (a instanceof Array && b instanceof Array) {
@@ -19,8 +19,9 @@ function arraysEqual(a, b) {
 
 
 const Contacts = ({ setPage, extra }) => {
-
   let currentUser = extra.selectedUser && extra.selectedUser !== 0 ? extra.selectedUser : extra.currentUser
+  initConnection(currentUser[0])
+  // console.log(getSocket())
   const [selectedUser, setSelectedUser] = useState(currentUser);
   const userList = []
   userList.push(extra.currentUser)
@@ -33,7 +34,7 @@ const Contacts = ({ setPage, extra }) => {
     return (
       <button
         className={`postition-relative list-group-item list-group-item-action ${active} ${iam}`}
-        onClick={(e) => setSelectedUser(userList[idx])}
+        onClick={(e) => { setSelectedUser(userList[idx]) }}
         key={user[0]}
       >
         {user[1]}
@@ -46,8 +47,8 @@ const Contacts = ({ setPage, extra }) => {
 
   useEffect(() => {
     // Connect after making sure that local stream is availble
-    socket.connect()
-    socket.emit("login", { username: extra.currentUser[0], auth: "auth-token" })
+    getSocket().connect()
+    // getSocket().emit("login", { username: extra.currentUser[0], auth: "auth-token" })
   })
 
   const webrtcCallback = () => {
@@ -66,7 +67,7 @@ const Contacts = ({ setPage, extra }) => {
           <div className="list-group w-100">{userGroup}</div>
 
           <div className="btn btn-outline-danger w-100 mt-5" onClick={
-            () => setPage("Login")
+            () => document.location.reload()
           }>Выйти</div>
         </div>
       </div>
